@@ -3,9 +3,9 @@ import { useI18n } from '../i18n/i18n-context'
 import { cn } from '../lib/cn'
 import { formatMonth } from '../lib/time'
 import type { SimulatedIncident } from '../lib/use-outage'
-import { Card, Section } from './Primitives'
+import { Section } from './Primitives'
 
-interface TimelineItem {
+interface LogEntry {
   key: string
   status: IncidentStatus
   title: string
@@ -14,16 +14,17 @@ interface TimelineItem {
   date: string
 }
 
-const statusStyle: Record<IncidentStatus, { dot: string; badge: string }> = {
-  resolved: { dot: 'bg-up ring-up/50', badge: 'bg-up-soft text-up-fg' },
-  ongoing: { dot: 'bg-accent ring-accent/50', badge: 'bg-accent-soft text-fg' },
-  maintenance: { dot: 'bg-degraded ring-degraded/50', badge: 'bg-degraded-soft text-degraded-fg' },
+const tagStyle: Record<IncidentStatus, string> = {
+  resolved: 'border-border-strong text-fg',
+  ongoing: 'border-accent bg-accent text-accent-fg',
+  maintenance: 'border-degraded bg-degraded-soft text-degraded-fg',
 }
 
+/** Career timeline as an incident log: date column, status tag, entry. */
 export function IncidentHistory({ simulated }: { simulated: readonly SimulatedIncident[] }) {
   const { t, l, locale } = useI18n()
 
-  const items: TimelineItem[] = [
+  const entries: LogEntry[] = [
     ...simulated.map((incident) => ({
       key: `sim-${incident.at}`,
       status: 'resolved' as const,
@@ -49,31 +50,27 @@ export function IncidentHistory({ simulated }: { simulated: readonly SimulatedIn
   ]
 
   return (
-    <Section id="incidents" title={t('incidents.title')} subtitle={t('incidents.subtitle')}>
-      <Card className="p-5">
-        <ol>
-          {items.map((item, index) => (
-            <li key={item.key} className="relative flex animate-fade-in gap-4 pb-6 last:pb-0">
-              {index < items.length - 1 && <span aria-hidden className="absolute top-5 bottom-0 left-[7px] w-px bg-border" />}
-              <span
-                aria-hidden
-                className={cn('relative mt-1 size-[15px] shrink-0 rounded-full border-[3px] border-surface ring-1', statusStyle[item.status].dot)}
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <h3 className="font-medium text-fg">{item.title}</h3>
-                  <span className={cn('rounded-full px-2 py-0.5 text-xs font-medium', statusStyle[item.status].badge)}>
-                    {t(`incidents.${item.status}`)}
-                  </span>
-                </div>
-                {item.org && <p className="mt-0.5 text-sm font-medium text-fg/80">{item.org}</p>}
-                <p className="mt-1 text-sm text-muted">{item.body}</p>
-                <p className="mt-1 font-mono text-xs text-subtle">{item.date}</p>
+    <Section id="incidents" index={3} title={t('incidents.title')} subtitle={t('incidents.subtitle')}>
+      <ol className="divide-y divide-border border-b border-border">
+        {entries.map((entry) => (
+          <li
+            key={entry.key}
+            className="grid animate-fade-in gap-2 py-4 first:pt-0 sm:grid-cols-[13rem_1fr] sm:gap-8"
+          >
+            <p className="label pt-1 text-muted">{entry.date}</p>
+            <div>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h3 className="font-semibold text-fg">{entry.title}</h3>
+                <span className={cn('label border px-1.5 py-px', tagStyle[entry.status])}>
+                  {t(`incidents.${entry.status}`)}
+                </span>
               </div>
-            </li>
-          ))}
-        </ol>
-      </Card>
+              {entry.org && <p className="mt-0.5 text-sm text-fg">{entry.org}</p>}
+              <p className="mt-1 text-sm leading-relaxed text-muted">{entry.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </Section>
   )
 }

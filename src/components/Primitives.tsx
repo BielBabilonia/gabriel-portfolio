@@ -3,56 +3,61 @@ import { cn } from '../lib/cn'
 
 export type Tone = 'up' | 'down' | 'degraded' | 'paused'
 
-const dotColor: Record<Tone, string> = {
+const ledColor: Record<Tone, string> = {
   up: 'bg-up',
   down: 'bg-down',
   degraded: 'bg-degraded',
   paused: 'bg-paused',
 }
 
-/** Colored status dot. Decorative: always pair it with a text label. */
-export function StatusDot({ tone, pulse = false, className }: { tone: Tone; pulse?: boolean; className?: string }) {
+/** Indicator light. Decorative: always pair it with a text label. */
+export function StatusDot({ tone, blink = false, className }: { tone: Tone; blink?: boolean; className?: string }) {
   return (
-    <span aria-hidden className={cn('relative inline-flex size-2.5 shrink-0', className)}>
-      {pulse && <span className={cn('absolute inset-0 animate-pulse-ring rounded-full', dotColor[tone])} />}
-      <span className={cn('relative inline-flex size-full rounded-full', dotColor[tone])} />
-    </span>
+    <span
+      aria-hidden
+      className={cn(
+        'inline-block size-2 shrink-0 rounded-full ring-2 ring-bg',
+        ledColor[tone],
+        blink && 'animate-blink',
+        className,
+      )}
+    />
   )
 }
 
-export function Card({ className, ...props }: ComponentProps<'div'>) {
-  return <div className={cn('rounded-xl border border-border bg-surface shadow-card', className)} {...props} />
+/** A ruled box: 1px border, square corners, no shadow. */
+export function Box({ className, ...props }: ComponentProps<'div'>) {
+  return <div className={cn('border border-border-strong bg-surface', className)} {...props} />
 }
 
 interface SectionProps {
   id: string
+  index: number
   title: string
   subtitle: string
   children: ReactNode
-  aside?: ReactNode
 }
 
-export function Section({ id, title, subtitle, children, aside }: SectionProps) {
+/** Numbered manual section: "02 — Services", with a hairline rule. */
+export function Section({ id, index, title, subtitle, children }: SectionProps) {
   return (
-    <section aria-labelledby={`${id}-title`} className="animate-fade-in">
-      <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <h2 id={`${id}-title`} className="font-semibold text-fg">
-            {title}
-          </h2>
-          <p className="text-sm text-muted">{subtitle}</p>
-        </div>
-        {aside}
-      </div>
+    <section aria-labelledby={`${id}-title`}>
+      <header className="mb-5 flex items-baseline gap-3 border-t border-border-strong pt-3">
+        {/* Orange is a mark, not text: it lacks contrast for small type on paper. */}
+        <span className="label flex items-center gap-2 text-fg" aria-hidden>
+          <span className="inline-block size-2 bg-accent" />
+          {String(index).padStart(2, '0')}
+        </span>
+        <h2 id={`${id}-title`} className="label text-fg">
+          {title}
+        </h2>
+        <p className="label ml-auto hidden text-subtle sm:block">{subtitle}</p>
+      </header>
       {children}
     </section>
   )
 }
 
 export function Chip({ children }: { children: ReactNode }) {
-  return (
-    <li className="rounded-md border border-border bg-surface-muted px-2 py-0.5 font-mono text-xs text-muted">
-      {children}
-    </li>
-  )
+  return <li className="border border-border px-1.5 py-px font-mono text-[11px] text-muted">{children}</li>
 }

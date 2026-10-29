@@ -1,4 +1,4 @@
-import { useId, type ComponentProps } from 'react'
+import type { ComponentProps } from 'react'
 
 type IconProps = ComponentProps<'svg'>
 
@@ -21,24 +21,15 @@ function Icon({ children, ...props }: IconProps) {
 }
 
 export function LogoMark(props: IconProps) {
-  // Unique per instance: the logo appears more than once on a page.
-  const gradientId = useId()
   return (
     <svg viewBox="0 0 32 32" aria-hidden focusable={false} {...props}>
-      <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="var(--accent-from)" />
-          <stop offset="100%" stopColor="var(--accent-to)" />
-        </linearGradient>
-      </defs>
-      <rect width="32" height="32" rx="8" fill={`url(#${gradientId})`} />
+      <rect width="32" height="32" fill="var(--accent)" />
       <path
-        d="M6 17h5l2.5-6 4 11 3-8 1.5 3H26"
+        d="M5 17h5l2.5-6 4 11 3-8 1.5 3H27"
         fill="none"
         stroke="var(--accent-fg)"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeWidth="2.6"
+        strokeLinecap="square"
       />
     </svg>
   )
@@ -97,3 +88,5 @@ export const LinkedinIcon = (p: IconProps) => (
     <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" />
   </svg>
 )
+export const ArrowRightIcon = (p: IconProps) => <Icon {...p}><path d="M5 12h14M13 5l7 7-7 7" /></Icon>
+export const ArrowUpRightIcon = (p: IconProps) => <Icon {...p}><path d="M7 17 17 7M8 7h9v9" /></Icon>

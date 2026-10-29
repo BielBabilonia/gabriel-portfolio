@@ -1,61 +1,58 @@
 import { profile } from '../content/profile'
 import { useI18n } from '../i18n/i18n-context'
+import { buttonStyles } from '../lib/button-styles'
 import { cn } from '../lib/cn'
 import type { OutagePhase } from '../lib/use-outage'
-import { AlertIcon, CheckIcon, FileIcon, MailIcon } from './icons'
+import { ArrowRightIcon, FileIcon } from './icons'
 import { StatusDot } from './Primitives'
-
-const bannerStyle: Record<OutagePhase, string> = {
-  operational: 'border-up/40 bg-up-soft text-up-fg',
-  investigating: 'border-down/40 bg-down-soft text-down-fg animate-shake',
-  resolved: 'border-up/40 bg-up-soft text-up-fg',
-}
-
-const primaryButton =
-  'inline-flex h-10 items-center gap-2 rounded-lg bg-linear-to-r from-accent-from to-accent-to px-4 text-sm font-medium text-accent-fg shadow-card transition hover:brightness-110 [&_svg]:size-4'
-const secondaryButton =
-  'inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-surface px-4 text-sm font-medium text-fg shadow-card transition-colors hover:bg-surface-muted [&_svg]:size-4'
 
 export function Banner({ phase }: { phase: OutagePhase }) {
   const { t, l } = useI18n()
   const { links } = profile
   const contact = links.email ? `mailto:${links.email}` : links.linkedin
+  const down = phase === 'investigating'
 
   return (
-    <div className="space-y-8">
+    <div>
       <div
         role="status"
         aria-live="polite"
-        className={cn('flex items-center gap-3 rounded-xl border px-5 py-4 transition-colors', bannerStyle[phase])}
+        className={cn(
+          'label flex items-center gap-3 border-y px-0 py-2.5 transition-colors',
+          down ? 'animate-shake border-down bg-down px-3 text-white dark:text-bg' : 'border-border-strong text-fg',
+        )}
       >
-        {phase === 'investigating' ? <AlertIcon className="size-6 shrink-0" /> : <CheckIcon className="size-6 shrink-0" />}
-        <p className="text-lg font-semibold">
+        <StatusDot tone={down ? 'down' : 'up'} blink={down} className={down ? 'ring-down' : undefined} />
+        <span>
           {phase === 'operational' && t('banner.operational')}
           {phase === 'investigating' && t('banner.investigating')}
           {phase === 'resolved' && t('banner.resolved')}
-        </p>
+        </span>
+        <span aria-hidden className="leader hidden border-current opacity-40 sm:block" />
+        <span className="hidden sm:inline">{l(profile.location)}</span>
       </div>
 
-      <div>
+      <div className="pt-12 pb-4 sm:pt-20">
         {profile.openToWork && (
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-sm font-medium text-fg shadow-card">
-            <StatusDot tone="up" pulse />
+          <p className="label mb-6 inline-flex items-center gap-2 bg-accent px-2 py-1 text-accent-fg">
             {t('banner.openToWork')}
           </p>
         )}
-        <h1 className="text-4xl font-bold tracking-tight text-fg sm:text-6xl">{profile.name}</h1>
-        <p className="text-gradient mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{l(profile.title)}</p>
-        <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">{l(profile.tagline)}</p>
+        <h1 className="max-w-4xl text-5xl leading-[0.95] font-semibold tracking-[-0.035em] text-fg sm:text-7xl">
+          {profile.name}
+        </h1>
+        <p className="mt-5 text-xl font-medium tracking-tight text-fg sm:text-2xl">{l(profile.title)}</p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">{l(profile.tagline)}</p>
         {(contact || links.cv) && (
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             {contact && (
-              <a href={contact} className={primaryButton} {...(links.email ? {} : { target: '_blank', rel: 'noreferrer' })}>
-                <MailIcon />
+              <a href={contact} className={buttonStyles.primary} {...(links.email ? {} : { target: '_blank', rel: 'noreferrer' })}>
                 {t('banner.contact')}
+                <ArrowRightIcon />
               </a>
             )}
             {links.cv && (
-              <a href={links.cv} className={secondaryButton} target="_blank" rel="noreferrer">
+              <a href={links.cv} className={buttonStyles.secondary} target="_blank" rel="noreferrer">
                 <FileIcon />
                 {t('banner.resume')}
               </a>

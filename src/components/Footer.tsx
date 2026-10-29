@@ -2,7 +2,7 @@ import { profile } from '../content/profile'
 import { useI18n } from '../i18n/i18n-context'
 import { cn } from '../lib/cn'
 import type { OutagePhase, SimulatedIncident } from '../lib/use-outage'
-import { CheckIcon, GithubIcon, ZapIcon } from './icons'
+import { GithubIcon } from './icons'
 
 const REPO_URL = 'https://github.com/BielBabilonia/gabriel-portfolio'
 
@@ -15,42 +15,45 @@ interface FooterProps {
 export function Footer({ phase, lastIncident, onSimulate }: FooterProps) {
   const { t } = useI18n()
   const firstName = profile.name.split(' ')[0]
+  const idle = phase === 'operational'
 
   return (
-    <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-4 py-10 text-center sm:px-6">
-        <button
-          type="button"
-          onClick={onSimulate}
-          disabled={phase !== 'operational'}
-          className={cn(
-            'inline-flex h-11 items-center gap-2 rounded-full border px-5 text-sm font-semibold shadow-card transition [&_svg]:size-4',
-            phase === 'operational'
-              ? 'border-down/40 bg-down-soft text-down-fg hover:scale-[1.03] hover:border-down active:scale-95'
-              : 'cursor-wait border-border bg-surface-muted text-muted',
-          )}
-        >
-          <ZapIcon />
-          {phase === 'investigating' ? t('outage.running') : t('outage.button')}
-        </button>
+    <footer className="mt-24 border-t border-border-strong">
+      <div className="mx-auto grid max-w-5xl gap-10 px-4 py-12 sm:grid-cols-[1fr_auto] sm:items-center sm:px-8">
+        <div className="flex items-center gap-5">
+          {/* A physical-looking emergency button: the page's easter egg. */}
+          <button
+            type="button"
+            onClick={onSimulate}
+            disabled={!idle}
+            aria-describedby="outage-hint"
+            className="group relative grid size-16 shrink-0 place-items-center rounded-full border-2 border-fg bg-surface-muted p-1.5 disabled:cursor-wait"
+          >
+            <span
+              className={cn(
+                'block size-full rounded-full bg-down shadow-[inset_0_-4px_0_rgb(0_0_0/0.25)] transition-transform',
+                idle ? 'group-hover:-translate-y-px group-active:translate-y-0.5 group-active:shadow-none' : 'translate-y-0.5 shadow-none',
+              )}
+            />
+            <span className="sr-only">{t('outage.button')}</span>
+          </button>
+          <div>
+            <p className="label text-fg">{phase === 'investigating' ? t('outage.running') : t('outage.button')}</p>
+            <p id="outage-hint" className="mt-1 text-sm text-muted" aria-live="polite">
+              {phase === 'resolved' && lastIncident
+                ? t('outage.resolvedBy', { name: firstName, seconds: lastIncident.seconds })
+                : t('outage.hint')}
+            </p>
+          </div>
+        </div>
 
-        {/* Polite announcement of the result; visible while the banner shows "resolved". */}
-        <p aria-live="polite" className="min-h-5 text-sm text-up-fg">
-          {phase === 'resolved' && lastIncident && (
-            <span className="inline-flex animate-fade-in items-center gap-1.5">
-              <CheckIcon className="size-4" />
-              {t('outage.resolvedBy', { name: firstName, seconds: lastIncident.seconds })}
-            </span>
-          )}
-        </p>
-
-        <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-muted">
+        <div className="label flex flex-col gap-2 text-muted sm:items-end">
           <span>{t('footer.built')}</span>
-          <a href={REPO_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-sm hover:text-fg">
-            <GithubIcon className="size-4" />
+          <a href={REPO_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-fg">
+            <GithubIcon className="size-3.5" />
             {t('footer.source')}
           </a>
-        </p>
+        </div>
       </div>
     </footer>
   )

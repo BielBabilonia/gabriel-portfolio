@@ -20,22 +20,23 @@ export function App() {
   }, [t])
 
   return (
-    <div className="relative flex min-h-dvh flex-col overflow-x-clip">
-      <div aria-hidden className="bg-grid pointer-events-none absolute inset-x-0 top-0 h-[36rem]" />
+    <div className="flex min-h-dvh flex-col">
       <a
         href="#main"
-        className="sr-only z-50 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-fg focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        className="label sr-only z-50 bg-accent px-3 py-2 text-accent-fg focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >
         {t('skip')}
       </a>
       <Header />
-      <main id="main" tabIndex={-1} className="relative mx-auto w-full max-w-4xl flex-1 space-y-12 px-4 py-10 outline-none sm:px-6 sm:py-14">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-4 outline-none sm:px-8">
         <Banner phase={outage.phase} />
-        <Stats />
-        <ComponentsSection down={outage.down} />
-        <ServicesSection down={outage.down} />
-        <IncidentHistory simulated={outage.history} />
-        <Contact />
+        <div className="mt-10 space-y-20">
+          <Stats />
+          <ComponentsSection down={outage.down} />
+          <ServicesSection down={outage.down} />
+          <IncidentHistory simulated={outage.history} />
+          <Contact />
+        </div>
       </main>
       <Footer phase={outage.phase} lastIncident={outage.history[0]} onSimulate={outage.trigger} />
     </div>

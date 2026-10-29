@@ -10,19 +10,18 @@ export function Header() {
   const handle = profile.name.split(' ')[0].toLowerCase()
 
   return (
-    <header className="border-b border-border bg-bg/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-4xl items-center justify-between gap-4 px-4 sm:px-6">
-        <p className="flex items-center gap-2 font-mono text-sm font-medium">
-          <LogoMark className="size-7" />
+    <header className="border-b border-border-strong">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-8">
+        <p className="flex items-center gap-2.5 font-mono text-sm font-medium">
+          <LogoMark className="size-6" />
           <span>
             {handle}
-            <span className="text-muted">.status</span>
+            <span className="text-subtle">.status</span>
           </span>
         </p>
         <div className="flex items-center gap-2">
           <SegmentedControl<Locale>
             label={t('language.label')}
-            size="sm"
             value={locale}
             onChange={setLocale}
             options={LOCALES.map((value) => ({
@@ -34,7 +33,6 @@ export function Header() {
           />
           <SegmentedControl<ThemePreference>
             label={t('theme.label')}
-            size="sm"
             value={preference}
             onChange={setPreference}
             options={[
