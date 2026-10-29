@@ -1,34 +1,4 @@
-import type { ComponentProps, ReactNode } from 'react'
-import { cn } from '../lib/cn'
-
-export type Tone = 'up' | 'down' | 'degraded' | 'paused'
-
-const ledColor: Record<Tone, string> = {
-  up: 'bg-up',
-  down: 'bg-down',
-  degraded: 'bg-degraded',
-  paused: 'bg-paused',
-}
-
-/** Indicator light. Decorative: always pair it with a text label. */
-export function StatusDot({ tone, blink = false, className }: { tone: Tone; blink?: boolean; className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={cn(
-        'inline-block size-2 shrink-0 rounded-full ring-2 ring-bg',
-        ledColor[tone],
-        blink && 'animate-blink',
-        className,
-      )}
-    />
-  )
-}
-
-/** A ruled box: 1px border, square corners, no shadow. */
-export function Box({ className, ...props }: ComponentProps<'div'>) {
-  return <div className={cn('border border-border-strong bg-surface', className)} {...props} />
-}
+import type { ReactNode } from 'react'
 
 interface SectionProps {
   id: string

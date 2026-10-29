@@ -20,15 +20,16 @@ function Icon({ children, ...props }: IconProps) {
   )
 }
 
+/** "G" monogram, drawn as a stroke so it stays crisp without a web font. */
 export function LogoMark(props: IconProps) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden focusable={false} {...props}>
       <rect width="32" height="32" fill="var(--accent)" />
       <path
-        d="M5 17h5l2.5-6 4 11 3-8 1.5 3H27"
+        d="M22.5 10.2A8 8 0 1 0 24 17h-7.5"
         fill="none"
         stroke="var(--accent-fg)"
-        strokeWidth="2.6"
+        strokeWidth="3.2"
         strokeLinecap="square"
       />
     </svg>
@@ -90,3 +91,4 @@ export const LinkedinIcon = (p: IconProps) => (
 )
 export const ArrowRightIcon = (p: IconProps) => <Icon {...p}><path d="M5 12h14M13 5l7 7-7 7" /></Icon>
 export const ArrowUpRightIcon = (p: IconProps) => <Icon {...p}><path d="M7 17 17 7M8 7h9v9" /></Icon>
+export const DownloadIcon = (p: IconProps) => <Icon {...p}><path d="M12 4v12M6 11l6 6 6-6M5 20h14" /></Icon>

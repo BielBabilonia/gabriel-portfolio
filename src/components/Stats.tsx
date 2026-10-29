@@ -1,9 +1,8 @@
 import type { ReactNode } from 'react'
 import { profile, projects } from '../content/profile'
 import { useI18n } from '../i18n/i18n-context'
-import { formatClock, isWorkingHours, offsetLabel } from '../lib/time'
+import { formatClock, offsetLabel } from '../lib/time'
 import { useNow } from '../lib/use-now'
-import { StatusDot } from './Primitives'
 
 function Cell({ label, value, hint }: { label: string; value: ReactNode; hint: ReactNode }) {
   return (
@@ -21,17 +20,11 @@ function Cell({ label, value, hint }: { label: string; value: ReactNode; hint: R
 function LocalTime() {
   const { t, locale } = useI18n()
   const now = new Date(useNow(15_000))
-  const working = isWorkingHours(now, profile.timeZone)
   return (
     <Cell
       label={`${t('stats.localTime')} · ${offsetLabel(now, profile.timeZone)}`}
       value={<time dateTime={now.toISOString()}>{formatClock(now, profile.timeZone, locale)}</time>}
-      hint={
-        <>
-          <StatusDot tone={working ? 'up' : 'paused'} />
-          {working ? t('stats.workingHours') : t('stats.offHours')}
-        </>
-      }
+      hint={t('stats.timeZoneHint')}
     />
   )
 }
@@ -44,9 +37,9 @@ export function Stats() {
       <LocalTime />
       <Cell label={t('stats.languages')} value={l(profile.languages)} hint={t('stats.languagesHint')} />
       <Cell
-        label={t('stats.services')}
+        label={t('stats.projects')}
         value={projects.filter((p) => p.state === 'live').length}
-        hint={t('stats.servicesHint')}
+        hint={t('stats.projectsHint')}
       />
       <Cell label={t('stats.based')} value={l(profile.location)} hint={t('stats.basedHint')} />
     </div>

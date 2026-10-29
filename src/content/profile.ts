@@ -22,24 +22,19 @@ export interface Profile {
     github: string | null
     linkedin: string | null
     email: string | null
-    /** Path or URL to a PDF, e.g. "/cv.pdf" (put the file in /public). */
-    cv: string | null
   }
 }
 
-export interface SystemComponent {
+export interface Skill {
   id: string
   name: Localized
   description: Localized
-  /** The main service: highlighted on the page. */
+  /** Main focus: highlighted on the page. */
   primary?: boolean
   tech: string[]
 }
 
-/**
- * live: deployed, pinged from the visitor's browser and shown with uptime bars.
- * building: in development. done: finished, not deployed as a website.
- */
+/** live: deployed website. building: in development. done: finished, not a website. */
 export type ProjectState = 'live' | 'building' | 'done'
 
 export interface Project {
@@ -51,22 +46,19 @@ export interface Project {
   url: string | null
   repo: string | null
   image: string | null
-  /** ISO date. Uptime bars before this day show "not launched yet". */
+  /** ISO date the project went live. */
   launchedAt: string | null
   stack: string[]
 }
 
-export type IncidentStatus = 'resolved' | 'ongoing' | 'maintenance'
-
-export interface CareerIncident {
-  status: IncidentStatus
+export interface Experience {
   /** "YYYY-MM". */
   start: string
-  /** "YYYY-MM", or null while ongoing. Omit for one-off events. */
-  end?: string | null
+  /** "YYYY-MM", or null for a current role. */
+  end: string | null
   title: Localized
-  /** Company, school or context. */
-  org?: string
+  /** Company or school. */
+  org: string
   body: Localized
 }
 
@@ -85,18 +77,17 @@ export const profile: Profile = {
     github: 'https://github.com/BielBabilonia',
     linkedin: 'https://www.linkedin.com/in/gabriel-r-sobral/',
     email: 'gabrielrezendesobral@gmail.com',
-    cv: null, // TODO: '/cv.pdf' once the PDF is in /public
   },
 }
 
-export const systemComponents: SystemComponent[] = [
+export const skills: Skill[] = [
   {
     id: 'frontend',
     primary: true,
     name: { en: 'Frontend', pt: 'Frontend' },
     description: {
-      en: 'Primary service. Built a warehouse and work-order system from scratch to production: ~20 screens, route-level RBAC, drag-and-drop Kanban and dashboards with CSV/PDF export.',
-      pt: 'Serviço principal. Construí um sistema de almoxarifado e ordens de serviço do zero até produção: ~20 telas, RBAC por rota, Kanban com arrastar e soltar e dashboards com exportação em CSV/PDF.',
+      en: 'Built a warehouse and work-order system from scratch to production: ~20 screens, route-level RBAC, drag-and-drop Kanban and dashboards with CSV/PDF export.',
+      pt: 'Construí um sistema de almoxarifado e ordens de serviço do zero até produção: ~20 telas, RBAC por rota, Kanban com arrastar e soltar e dashboards com exportação em CSV/PDF.',
     },
     tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'TanStack Query', 'HTML & CSS', 'Vitest', 'Playwright'],
   },
@@ -183,28 +174,9 @@ export const projects: Project[] = [
   },
 ]
 
-/** Career timeline, newest first. */
-export const careerIncidents: CareerIncident[] = [
+/** Work and education, newest first. */
+export const experience: Experience[] = [
   {
-    status: 'ongoing',
-    start: '2026-10',
-    title: { en: 'Open to remote frontend roles', pt: 'Aberto a vagas remotas de frontend' },
-    body: {
-      en: 'Looking to work with international teams. Happy to work across the stack.',
-      pt: 'Buscando trabalhar com times internacionais, e disposto a atuar em toda a stack.',
-    },
-  },
-  {
-    status: 'resolved',
-    start: '2026-10',
-    title: { en: 'Shipped Upwatch', pt: 'Upwatch publicado' },
-    body: {
-      en: 'Uptime monitoring dashboard deployed to production, with CI running lint, type checks, unit and end-to-end tests.',
-      pt: 'Dashboard de monitoramento publicado em produção, com CI rodando lint, checagem de tipos, testes unitários e end-to-end.',
-    },
-  },
-  {
-    status: 'ongoing',
     start: '2026-03',
     end: null,
     title: { en: 'Software Developer (React / React Native)', pt: 'Desenvolvedor de Software (React / React Native)' },
@@ -215,7 +187,6 @@ export const careerIncidents: CareerIncident[] = [
     },
   },
   {
-    status: 'resolved',
     start: '2024-08',
     end: '2026-01',
     title: { en: 'Business Development Intern', pt: 'Estagiário em Desenvolvimento de Negócios' },
@@ -226,7 +197,6 @@ export const careerIncidents: CareerIncident[] = [
     },
   },
   {
-    status: 'resolved',
     start: '2023-06',
     end: '2025-01',
     title: { en: 'Commercial Director and Project Member', pt: 'Diretor Comercial e Membro Projetista' },
@@ -237,7 +207,6 @@ export const careerIncidents: CareerIncident[] = [
     },
   },
   {
-    status: 'resolved',
     start: '2021-01',
     end: '2025-12',
     title: { en: 'B.Eng. in Mechatronics Engineering', pt: 'Bacharelado em Engenharia Mecatrônica' },
@@ -248,3 +217,38 @@ export const careerIncidents: CareerIncident[] = [
     },
   },
 ]
+
+export type DocumentKind = 'resume' | 'cover-letter' | 'other'
+
+export interface DocumentInfo {
+  kind: DocumentKind
+  lang: 'en' | 'pt'
+  title: Localized
+}
+
+/**
+ * Optional nicer titles for files in /documents, keyed by file name.
+ * Files not listed here still show up: kind and language are guessed from the name.
+ */
+export const documentInfo: Record<string, DocumentInfo> = {
+  'resume-gabriel-rezende-EN.pdf': {
+    kind: 'resume',
+    lang: 'en',
+    title: { en: 'Résumé', pt: 'Currículo em inglês' },
+  },
+  'curriculo-gabriel-rezende.pdf': {
+    kind: 'resume',
+    lang: 'pt',
+    title: { en: 'Résumé in Portuguese', pt: 'Currículo' },
+  },
+  'curriculo-gabriel-rezende-IA.pdf': {
+    kind: 'resume',
+    lang: 'pt',
+    title: { en: 'Résumé in Portuguese, AI-assisted development focus', pt: 'Currículo com foco em desenvolvimento com IA' },
+  },
+  'cover-letter-gabriel-rezende.pdf': {
+    kind: 'cover-letter',
+    lang: 'en',
+    title: { en: 'Cover letter', pt: 'Carta de apresentação (inglês)' },
+  },
+}

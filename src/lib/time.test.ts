@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatClock, formatDate, formatMonth, isWorkingHours, offsetLabel } from './time'
+import { formatClock, formatDate, formatMonth, offsetLabel } from './time'
 
 const SP = 'America/Sao_Paulo'
 
@@ -12,11 +12,6 @@ describe('time helpers', () => {
     expect(offsetLabel(new Date('2026-10-29T12:00:00Z'), SP)).toBe('UTC-3')
   })
 
-  it('knows working hours on weekdays only', () => {
-    expect(isWorkingHours(new Date('2026-10-29T15:00:00Z'), SP)).toBe(true) // Thu 12:00
-    expect(isWorkingHours(new Date('2026-10-29T23:30:00Z'), SP)).toBe(false) // Thu 20:30
-    expect(isWorkingHours(new Date('2026-10-31T15:00:00Z'), SP)).toBe(false) // Sat
-  })
 
   it('does not shift date-only strings across time zones', () => {
     expect(formatDate('2026-10-29', 'en-US')).toBe('Oct 29, 2026')

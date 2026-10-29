@@ -1,7 +1,7 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
 import { App } from './App'
-import { profile } from './content/profile'
+import { experience, profile } from './content/profile'
 import { I18nProvider } from './i18n/I18nProvider'
 import { ThemeProvider } from './theme/ThemeProvider'
 
@@ -15,43 +15,30 @@ function renderApp(locale: 'en' | 'pt-BR' = 'en') {
   )
 }
 
-afterEach(() => vi.useRealTimers())
-
 describe('App', () => {
-  it('renders the profile as a status page', () => {
+  it('introduces the person and their work', () => {
     renderApp()
     expect(screen.getByRole('heading', { level: 1, name: profile.name })).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveTextContent('All systems operational')
     expect(screen.getByRole('heading', { name: 'Upwatch' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Live demo/ })).toHaveAttribute('href', 'https://upwatch-gamma.vercel.app')
   })
 
-  it('hides contact links that are not configured', () => {
+  it('lists experience with the current role marked', () => {
     renderApp()
-    const contact = screen.getByRole('region', { name: 'Subscribe to updates' })
-    expect(within(contact).getAllByRole('link')).toHaveLength(
-      Object.values(profile.links).filter(Boolean).length,
-    )
+    const section = screen.getByRole('region', { name: 'Experience' })
+    expect(within(section).getAllByRole('listitem')).toHaveLength(experience.length)
+    expect(within(section).getAllByText('Current')).toHaveLength(experience.filter((e) => e.end === null).length)
   })
 
-  it('simulates an outage and logs it in the incident history', () => {
-    vi.useFakeTimers()
+  it('shows every configured contact link', () => {
     renderApp()
-    fireEvent.click(screen.getByRole('button', { name: 'Simulate outage' }))
-    expect(screen.getByRole('status')).toHaveTextContent('Major outage')
-    expect(screen.getAllByText('Down').length).toBeGreaterThan(0)
-
-    act(() => vi.advanceTimersByTime(2500))
-    expect(screen.getByRole('status')).toHaveTextContent('Incident resolved')
-    expect(screen.getByText('Simulated outage')).toBeInTheDocument()
-
-    act(() => vi.advanceTimersByTime(4000))
-    expect(screen.getByRole('status')).toHaveTextContent('All systems operational')
+    const contact = screen.getByRole('region', { name: 'Contact' })
+    expect(within(contact).getAllByRole('link')).toHaveLength(Object.values(profile.links).filter(Boolean).length)
   })
 
   it('speaks Portuguese', () => {
     renderApp('pt-BR')
-    expect(screen.getByRole('status')).toHaveTextContent('Todos os sistemas operacionais')
+    expect(screen.getByRole('region', { name: 'Experiência' })).toBeInTheDocument()
     expect(screen.getByText('Desenvolvedor Frontend · React & TypeScript')).toBeInTheDocument()
   })
 })

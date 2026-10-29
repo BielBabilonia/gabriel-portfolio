@@ -1,21 +1,18 @@
-# gabriel.status
+# Gabriel Sobral — Portfolio
 
-My portfolio, presented as a live **status page**: projects are monitored services, skills are system
-components, and my career is the incident history.
+Personal portfolio: who I am, what I work on, projects, experience, résumés and contact.
+Designed like a technical manual: warm paper, black ink, one signal orange, numbered sections.
 
-- **Real measurements, no fake data.** Each project is pinged from the visitor's browser to show its actual
-  response time. Uptime bars start at the project's launch date and fill in as days pass.
-- **Live local time** with time zone and working hours, for teams in other time zones.
-- **Easter egg:** press *Simulate outage* in the footer.
 - English and Brazilian Portuguese, light/dark/system theme, keyboard and screen-reader friendly.
+- Live local time with time zone, for teams in other countries.
 
 ## Editing the content
 
-Everything personal lives in [`src/content/profile.ts`](src/content/profile.ts): name, title, links,
-skills, projects and the career timeline. Links set to `null` are hidden. Text that changes per language
-is written as `{ en, pt }`.
-
-To add a project, append it to `projects`, and put a screenshot in `public/projects/`.
+- **Text, skills, projects and experience:** [`src/content/profile.ts`](src/content/profile.ts).
+  Text that changes per language is written as `{ en, pt }`. Links set to `null` are hidden.
+- **Résumés and cover letters:** drop PDFs into [`documents/`](documents/). They are listed automatically
+  on the next build (see the README in that folder for file naming).
+- **Project screenshots:** `public/projects/`.
 
 ## Development
 

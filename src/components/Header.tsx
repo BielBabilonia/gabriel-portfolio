@@ -7,17 +7,15 @@ import { SegmentedControl } from './SegmentedControl'
 export function Header() {
   const { t, locale, setLocale } = useI18n()
   const { preference, setPreference } = useTheme()
-  const handle = profile.name.split(' ')[0].toLowerCase()
+  const parts = profile.name.split(' ')
+  const shortName = `${parts[0]} ${parts.at(-1)}`
 
   return (
     <header className="border-b border-border-strong">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-8">
         <p className="flex items-center gap-2.5 font-mono text-sm font-medium">
           <LogoMark className="size-6" />
-          <span>
-            {handle}
-            <span className="text-subtle">.status</span>
-          </span>
+          <span>{shortName}</span>
         </p>
         <div className="flex items-center gap-2">
           <SegmentedControl<Locale>

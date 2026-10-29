@@ -28,12 +28,9 @@ export function Contact() {
   if (links.github) {
     items.push({ key: 'github', label: t('contact.github'), detail: strip(links.github), href: links.github, external: true })
   }
-  if (links.cv) {
-    items.push({ key: 'cv', label: t('contact.cv'), detail: 'PDF', href: links.cv, external: true })
-  }
 
   return (
-    <Section id="contact" index={4} title={t('contact.title')} subtitle={t('contact.subtitle')}>
+    <Section id="contact" index={5} title={t('contact.title')} subtitle={t('contact.subtitle')}>
       <ul className="border-b border-border-strong">
         {items.map((item) => (
           <li key={item.key} className="border-t border-border first:border-t-0">

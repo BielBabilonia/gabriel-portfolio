@@ -1,19 +1,18 @@
 import { useEffect } from 'react'
 import { Banner } from './components/Banner'
-import { ComponentsSection } from './components/ComponentsSection'
 import { Contact } from './components/Contact'
+import { Documents } from './components/Documents'
+import { Experience } from './components/Experience'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
-import { IncidentHistory } from './components/IncidentHistory'
-import { ServicesSection } from './components/ServicesSection'
+import { Projects } from './components/Projects'
+import { Skills } from './components/Skills'
 import { Stats } from './components/Stats'
 import { profile } from './content/profile'
 import { useI18n } from './i18n/i18n-context'
-import { useOutage } from './lib/use-outage'
 
 export function App() {
   const { t } = useI18n()
-  const outage = useOutage()
 
   useEffect(() => {
     document.title = t('meta.title', { name: profile.name })
@@ -29,16 +28,17 @@ export function App() {
       </a>
       <Header />
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-4 outline-none sm:px-8">
-        <Banner phase={outage.phase} />
+        <Banner />
         <div className="mt-10 space-y-20">
           <Stats />
-          <ComponentsSection down={outage.down} />
-          <ServicesSection down={outage.down} />
-          <IncidentHistory simulated={outage.history} />
+          <Skills />
+          <Projects />
+          <Experience />
+          <Documents index={4} />
           <Contact />
         </div>
       </main>
-      <Footer phase={outage.phase} lastIncident={outage.history[0]} onSimulate={outage.trigger} />
+      <Footer />
     </div>
   )
 }
